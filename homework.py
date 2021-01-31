@@ -74,19 +74,20 @@ class CashCalculator(Calculator):
     def get_today_cash_remained(self, currency):
         self.currency = currency
         result = CashCalculator.get_today_stats(self)
+        total = self.limit - result
         convert = 0
         if self.currency == "usd":
-            convert = (self.limit - result) / CashCalculator.USD_RATE
+            convert = total / CashCalculator.USD_RATE
             self.currency = "USD"
         elif self.currency == "eur":
-            convert = (self.limit - result) / CashCalculator.EURO_RATE
+            convert = total / CashCalculator.EURO_RATE
             self.currency = "Euro"
         elif self.currency == "rub":
-            convert = (self.limit - result)
+            convert = total
             self.currency = "руб"
-        if (self.limit - result) == 0:
+        if total == 0:
             answer = "Денег нет, держись"
-        elif (self.limit - result) > 0:
+        elif total > 0:
             answer = f"На сегодня осталось" \
                 f" {abs(round(convert, 2))} {self.currency}"
         else:
