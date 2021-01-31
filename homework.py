@@ -19,7 +19,6 @@ class Calculator:
                 total_amount += data.amount
             else:
                 pass
-
         return total_amount
 
     def get_week_stats(self):
@@ -54,9 +53,10 @@ class CaloriesCalculator(Calculator):
         result = CaloriesCalculator.get_today_stats(self)
         total = self.limit - result
         if total > 0:
-            answer = f"Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {total} кКал"
+            answer = f"Сегодня можно съесть что-нибудь ещё," \
+                f" но с общей калорийностью не более {total} кКал"
         else:
-            answer = f"Хватит есть!"
+            answer = "Хватит есть!"
         return answer
 
 
@@ -87,7 +87,9 @@ class CashCalculator(Calculator):
         if (self.limit - result) == 0:
             answer = "Денег нет, держись"
         elif (self.limit - result) > 0:
-            answer = f"На сегодня осталось {abs(round(convert,2))} {self.currency}"
+            answer = f"На сегодня осталось" \
+                f" {abs(round(convert, 2))} {self.currency}"
         else:
-            answer = f"Денег нет, держись: твой долг - {abs(round(convert, 2))} {self.currency}"
+            answer = f"Денег нет, держись: твой долг" \
+                f" - {abs(round(convert, 2))} {self.currency}"
         return answer
