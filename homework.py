@@ -49,10 +49,9 @@ class CaloriesCalculator(Calculator):
         result = CaloriesCalculator.get_today_stats(self)
         total = self.limit - result
         if total > 0:
-            return f"Сегодня можно съесть что-нибудь ещё," \
-                f" но с общей калорийностью не более {total} кКал"
-        else:
-            return "Хватит есть!"
+            return (f"Сегодня можно съесть что-нибудь ещё,"
+                    f" но с общей калорийностью не более {total} кКал")
+        return "Хватит есть!"
 
 
 class CashCalculator(Calculator):
@@ -69,24 +68,17 @@ class CashCalculator(Calculator):
     def get_today_cash_remained(self, currency):
         result = CashCalculator.get_today_stats(self)
         total = self.limit - result
-        convert = 0
 
-        if currency == "usd":
-            convert = total / CashCalculator.USD_RATE
-        elif currency == "eur":
-            convert = total / CashCalculator.EURO_RATE
-        elif currency == "rub":
-            convert = total
-
-        currency_dictionary = {'usd': f'{abs(round(convert, 2))} USD',
-                               'eur': f'{abs(round(convert, 2))} Euro',
-                               'rub': f'{abs(round(convert, 2))} руб'}
+        currency_dictionary = {
+            'usd': f'{abs(round(total / CashCalculator.USD_RATE, 2))} USD',
+            'eur': f'{abs(round(total / CashCalculator.EURO_RATE, 2))} Euro',
+            'rub': f'{abs(round(total, 2))} руб'}
 
         if total == 0:
             return "Денег нет, держись"
         elif total > 0:
-            return f"На сегодня осталось" \
-                f" {currency_dictionary[currency].format(convert)}"
+            return (f"На сегодня осталось"
+                    f" {currency_dictionary[currency].format(total)}")
         else:
-            return f"Денег нет, держись: твой долг" \
-                f" - {currency_dictionary[currency].format(convert)}"
+            return (f"Денег нет, держись: твой долг"
+                    f" - {currency_dictionary[currency].format(total)}")
