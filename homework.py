@@ -17,8 +17,6 @@ class Calculator:
         for data in self.records:
             if data.date == now:
                 total_amount += data.amount
-            else:
-                pass
         return total_amount
 
     def get_week_stats(self):
@@ -30,18 +28,16 @@ class Calculator:
         for data in self.records:
             if last_get_week < data.date < tomorrow:
                 week_amount += data.amount
-            else:
-                pass
         return week_amount
 
 
 class Record:
-    def __init__(self, amount, comment, date=None):
+    def __init__(self, amount, comment, date=dt.datetime.today()):
         self.amount = amount
-        if date is None:
-            self.date = dt.datetime.now().date()
-        else:
+        if isinstance(date, str):
             self.date = dt.datetime.strptime(date, "%d.%m.%Y").date()
+        else:
+            self.date = dt.datetime.now().date()
         self.comment = comment
 
 
@@ -53,11 +49,9 @@ class CaloriesCalculator(Calculator):
         result = CaloriesCalculator.get_today_stats(self)
         total = self.limit - result
         if total > 0:
-            answer = f"Сегодня можно съесть что-нибудь ещё," \
-                f" но с общей калорийностью не более {total} кКал"
-        else:
-            answer = "Хватит есть!"
-        return answer
+            return (f"Сегодня можно съесть что-нибудь ещё,"
+                    f" но с общей калорийностью не более {total} кКал")
+        return "Хватит есть!"
 
 
 class CashCalculator(Calculator):
@@ -72,25 +66,19 @@ class CashCalculator(Calculator):
         return Calculator.get_today_stats(self)
 
     def get_today_cash_remained(self, currency):
-        self.currency = currency
         result = CashCalculator.get_today_stats(self)
         total = self.limit - result
-        convert = 0
-        if self.currency == "usd":
-            convert = total / CashCalculator.USD_RATE
-            self.currency = "USD"
-        elif self.currency == "eur":
-            convert = total / CashCalculator.EURO_RATE
-            self.currency = "Euro"
-        elif self.currency == "rub":
-            convert = total
-            self.currency = "руб"
+
+        currency_dictionary = {
+            'usd': f'{abs(round(total / CashCalculator.USD_RATE, 2))} USD',
+            'eur': f'{abs(round(total / CashCalculator.EURO_RATE, 2))} Euro',
+            'rub': f'{abs(round(total, 2))} руб'}
+
         if total == 0:
-            answer = "Денег нет, держись"
+            return "Денег нет, держись"
         elif total > 0:
-            answer = f"На сегодня осталось" \
-                f" {abs(round(convert, 2))} {self.currency}"
+            return (f"На сегодня осталось"
+                    f" {currency_dictionary[currency].format(total)}")
         else:
-            answer = f"Денег нет, держись: твой долг" \
-                f" - {abs(round(convert, 2))} {self.currency}"
-        return answer
+            return (f"Денег нет, держись: твой долг"
+                    f" - {currency_dictionary[currency].format(total)}")
